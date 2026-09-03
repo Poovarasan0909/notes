@@ -1,0 +1,365 @@
+<html>
+
+<body style="margin:2px;font-family:sans-serif;">
+  <div class="header">
+    <h3 style="margin: 10px;">Just Local Notes</h3>
+    <label>
+      Note Title: 
+      <input id="key" class="key-input" onchange="onKeyChange(event)"> 
+      <span class="new-btn" style="cursor: pointer;color:blue;" onclick="newNote()"> New</span>
+    </label> 
+    <div style="display: flex;">
+      <button id="dark-btn" class="dark-theme-btn rotate-btn" style="background-color: transparent;border: none;" onclick="onThemeChange()">
+        <svg style="color:black;" class="w-6 h-6 dark-theme-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+          width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd"
+            d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+      <button id="light-btn" class="light-theme-btn rotate-btn" style="background-color: transparent;border: none;" onclick="onThemeChange()">
+        <svg style="color:white;" class="w-6 h-6 light-theme-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20"
+          height="20" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 5V3m0 18v-2M7.05 7.05 5.636 5.636m12.728 12.728L16.95 16.95M5 12H3m18 0h-2M7.05 16.95l-1.414 1.414M18.364 5.636 16.95 7.05M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" />
+        </svg>
+      </button>
+      <button style="margin-right: 5px" class="cursor-pointer save-btn" onclick="save()">Save</button>
+      <button style="margin-right: 5px" class="cursor-pointer clear-btn" onclick="clearNote()">Clear</button>
+    </div>
+  </div>
+  <div class="key_note">
+    <div id="keys" class="sideBar-keys" style="width:20%;min-height:70%;"></div>
+    <div id="drag-content" class="draggable"></div>
+    <textarea resize="none" id="note-content" class="note-area" oninput="onNoteChange(event)"></textarea><br><br>
+  </div>
+
+  <script>
+    window.addEventListener('beforeunload', function (event) {
+    event.preventDefault();
+    // event.returnValue = ''; 
+  });
+    window.addEventListener('load', function() {
+        const current_theme = localStorage.getItem("*theme*");
+        const light_btn = document.getElementById("light-btn");
+       const dark_btn = document.getElementById("dark-btn");
+       const body_element = document.getElementsByTagName("body");
+        if(current_theme === "dark") {
+           dark_btn.style.display = "none";
+           light_btn.style.display = "inline";
+           body_element[0].classList.add("dark");
+           body_element[0].classList.remove("light");
+        } else {
+           light_btn.style.display = "none";
+           dark_btn.style.display = "inline";
+           body_element[0].classList.add("light");
+           body_element[0].classList.remove("dark");
+        }
+     })
+     window.addEventListener('beforeunload', function(event) {
+      event.preventDefault();
+      event.returnValue = '';
+      alert("wait.,....");
+     });
+
+
+     const dragContent = document.getElementById("drag-content");
+     const keysComp = document.getElementById("keys");
+     const noteElement = document.getElementById("note-content");
+     let startX = 0;
+     let startWidth = 0;
+     let noteStartWidth = 0;
+    
+     dragContent.addEventListener('mousedown', (e) => {
+       e.preventDefault();
+       
+       startX = e.clientX;
+       startWidth = parseInt(document.defaultView.getComputedStyle(keysComp).width, 10);     
+       noteStartWidth = parseInt(document.defaultView.getComputedStyle(noteElement).width, 10); 
+       window.addEventListener('mousemove', resizeComponent)
+       window.addEventListener('mouseup', stopDrag)
+     }) 
+
+     function resizeComponent(e) {
+         const currentMoveValue = e.clientX - startX;
+         const newwidth = startWidth + currentMoveValue;
+         const newNoteWidth = noteStartWidth - currentMoveValue;
+         if(newwidth > 50) {
+            keysComp.style.width = `${newwidth}px`;
+            noteElement.style.width = `${newNoteWidth}px`;
+         }
+     }
+     
+     function stopDrag() {
+      window.removeEventListener('mousemove', resizeComponent)
+      window.removeEventListener('mouseup', stopDrag)
+     }
+
+    function onThemeChange() {
+       const current_theme = localStorage.getItem("*theme*");
+       const light_btn = document.getElementById("light-btn");
+       const dark_btn = document.getElementById("dark-btn");
+       const body_element = document.getElementsByTagName("body");
+       if(current_theme === "light") {
+          localStorage.setItem("*theme*", "dark");
+          dark_btn.style.display = "none";
+          light_btn.style.display = "inline";
+          body_element[0].classList.add("dark");
+          body_element[0].classList.remove("light");
+       } else {
+          localStorage.setItem("*theme*","light");
+          light_btn.style.display = "none";
+          dark_btn.style.display = "inline";
+          body_element[0].classList.add("light");
+          body_element[0].classList.remove("dark");
+       }
+
+    }
+    function save() {
+      const key = document.getElementById("key").value;
+      const value = document.getElementById("note-content").value;
+      if (key) {
+        localStorage.setItem(key, value);
+        showKeyList();
+      } 
+    }
+    function onKeyChange(e) {
+       const noteValue = document.getElementById("note-content").value;
+       const keyValue = e.target.value
+       if(noteValue && keyValue) {
+        localStorage.setItem(keyValue, e.target.value);
+        showKeyList();
+       }
+    }
+    function onNoteChange(e) {
+      const key = document.getElementById("key").value;
+      if (key) {
+        localStorage.setItem(key, e.target.value);
+        showKeyList();
+      }
+    }
+    function newNote() {
+      const noteValue = document.getElementById("note-content").value
+      const noteKey = document.getElementById("key").value
+      if(noteValue && !noteKey) {
+         const confirmNew = confirm("Do you want to clear the exiting value in notes")
+         if(!confirmNew) return;
+      }
+
+      document.getElementById("key").value = "";
+      document.getElementById("note-content").value = "";
+    }
+
+    function loadKey(key) {
+      document.getElementById("key").value = key;
+      document.getElementById("note-content").value = localStorage.getItem(key)
+
+    }
+    function clearNote() {
+      document.getElementById("note-content").value = "";
+    }
+    function clearKey() {
+      const keyInput = document.getElementById("key");
+      console.log(keyInput, "{{nbcvx bbnbnb")
+      keyInput.value = "";
+      keyInput.dispatchEvent(new Event("input"));
+    }
+
+    function deleteKey(value) {
+      const confirmDelete = confirm("Do you want to delete the key?");
+      const selectedKeyValue = document.getElementById("key").value
+      if(confirmDelete) {
+        localStorage.removeItem(value);
+        showKeyList();
+        console.log(value === selectedKeyValue,"ddddcccc");
+        if(value === selectedKeyValue) {
+          clearKey()
+        }
+      }
+    }
+    function showKeyList() {
+      const keyListDiv = document.getElementById("keys")
+      keyListDiv.innerHTML = `<div></div>`
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if(key === "*theme*") continue;
+        keyListDiv.innerHTML += `<div class="keyItem" title="${key}" onclick="loadKey('${key}')">
+                                    <div class="key-title">${key}</div>
+                                    <span class="keylist_delete" onclick="deleteKey('${key}')">[X]</span>
+                                 </div>`;
+      }
+    }
+    window.onload = showKeyList
+  </script>
+  <style>
+       textarea {
+        resize: none;
+       }
+      .cursor-pointer {
+        cursor: pointer;
+      }
+     .dark {
+       background-color: #121212;
+       color: #E0E0E0;
+
+       .note-area {
+        background-color: #1A1A1A;
+        color: #E0E0E0;
+       }
+       .sideBar-keys {
+        background-color: #1E1E1E;
+       }
+       .keyItem {
+        color: #A0A0A0;
+       }
+       .new-btn {
+        color: #8AB4F8;
+       }
+       .key-input {
+        background-color: #1A1A1A;
+        color: #E0E0E0;
+       }
+       .keyItem:hover {
+          background: #0f0f0f;
+        }
+     }
+    .light {
+      background-color: #F8F9FA;
+      color: #212529;
+
+       .note-area {
+        background-color: #FFFFFF;
+        color: #212529;
+       }
+       .sideBar-keys {
+        background-color: #F1F3F5;
+       }
+       .keyItem {
+        color: #495057;
+       }
+       .new-btn {
+          color: #1A73E8;
+       }
+       .keyItem:hover {
+          background: #f7f7f7;
+        }
+    }
+    .key_note {
+      display: flex;
+      height: 90vh;
+      justify-content: center;
+    }
+
+    .note-area {
+      width: 80%;
+      min-height: 69%;
+      outline: none;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 8vh;
+    }
+  
+    .keyItem {
+      position: relative;
+      padding: 5px;
+      border-bottom: 1px solid;
+      cursor: pointer;
+      display: flex;
+    }
+    
+    .key-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 87%;
+      max-width: 100%;
+    }
+    .keylist_delete {
+      display: none;
+      margin-left: 5px;
+      color: red;
+      cursor: pointer;
+    }
+
+    .keyItem:hover .keylist_delete {
+      display: inline;
+    }
+     .rotate-btn {
+      transition: transform 0.9s ease;
+      transform: scale(1) rotate(30deg); 
+      cursor: pointer;
+    }
+    .rotate-btn:hover {
+      transition: transform 0.9s ease;
+      transform: scale(1) rotate(-90deg); 
+    }
+
+    /* input */
+     .key-input {
+      outline: none;
+      padding: 4px;
+      font: 1em sans-serif;
+      border: 1px solid #757575;
+      border-radius: 5px;
+      outline: none;
+      width: 35vw;
+    }
+
+    /* buttons */
+    .clear-btn, .save-btn {
+      border: none;
+      font-family: sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 1s ease
+    }
+  
+    .light .save-btn {
+       background-color: #22c55e;
+       color: #ffffff;
+    }
+    .light .save-btn:hover {
+       background-color: #16a34a;
+    }
+    .light .clear-btn {
+       background-color: #ef4444;
+       color: #ffffff;
+    }
+    .light .clear-btn:hover {
+       background-color: #dc2626;
+    }
+    
+    .dark .save-btn {
+       background-color: #4ade80;
+       color: #052e16;
+    }
+    .dark .save-btn:hover {
+        background-color: #22c55e;
+    }
+    .dark .clear-btn {
+       background-color: #f87171;
+       color: #450a0a;
+    }
+    .dark .clear-btn:hover {
+       background-color: #ef4444;
+    }
+    /* Draggable css */
+
+    .draggable {
+      width: 2px;
+    }
+    .draggable:hover {
+      border: 1px solid #1A73E8;
+      background-color: #1A73E8;
+      cursor: ew-resize;
+    }
+
+  </style>
+</body>
+
+</html>
