@@ -14,12 +14,10 @@ A lightweight, fully client-side web application for taking and managing your no
 
 This application is designed specifically with your privacy as the main priority.
 
-- **100% Local Storage**: All of your notes and settings are stored entirely within your browser using modern web storage APIs (IndexedDB for the main app, Local Storage for `mini_notes.html`). 
+- **100% Local Storage**: All of your notes and settings are stored entirely within your browser using modern web storage APIs (IndexedDB for the main app). 
 - **Zero API Calls**: The application does not communicate with any external servers, backends, databases, telemetry services, or third-party tracking APIs.
 - **Absolutely Safe**: Because there is zero network connectivity required for saving your notes, your data never leaves your device. It is inherently protected from interception, online data breaches, or third-party analysis.
 
 ## 💻 Usage
 
 Simply open `index.html` in any modern web browser to start using the application. No server, installation, or setup is required. 
-
-*(An alternative even more lightweight version is available in `mini_notes.html`)*
