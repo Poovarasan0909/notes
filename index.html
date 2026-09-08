@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="G8iAgTVngtVbpMFuyVZ0HO63D3DuInPMY5vxYn-_TVk" />
+  <!-- <meta name="google-site-verification" content="G8iAgTVngtVbpMFuyVZ0HO63D3DuInPMY5vxYn-_TVk" /> -->
   <title>Just Local Notes</title>
 </head>
 
@@ -17,7 +17,7 @@
     <div class="header-center">
       <div class="input-wrapper">
         <label for="key" class="input-label">Note Title:</label>
-        <input id="key" class="key-input" placeholder="Untitled Note" onchange="onKeyChange(event)">
+        <input id="key" class="key-input" placeholder="Untitled Note" oninput="onKeyChange(event)">
         <button class="new-btn" onclick="newNote()">+ New Note</button>
       </div>
     </div>
@@ -321,7 +321,7 @@
 
     async function deleteKey(event, datastring) {
       event.stopPropagation();
-      const parsedData = JSON.parse(datastring);
+      const parsedData = datastring;
       const confirmDelete = confirm(`Do you want to delete this "${parsedData.key}"?`);
       const selectedKeyId = document.getElementById("key").name;
       if (confirmDelete) {
