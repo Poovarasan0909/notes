@@ -289,15 +289,11 @@
     }
 
     function loadKey(data) {
-      data = JSON.parse(data);
-
-      document.getElementById("key").value = data.key;
-      document.getElementById("note-content").value = data?.value ? data?.value : "";
-
-      document.getElementById("key").name = data.id;
-      document.getElementById("note-content").name = data.id;
-
-      setSelectedBackground(data.id);
+      document.getElementById("key").value = data.key; 
+      document.getElementById("note-content").value = data?.value ? data?.value : ""; 
+      document.getElementById("key").name = data.id; 
+      document.getElementById("note-content").name = data.id; 
+      setSelectedBackground(data.id); 
     }
 
     function setSelectedBackground(id) {
