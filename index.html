@@ -338,21 +338,56 @@
       }
     }
 
-    async function showKeyList() {
-      const noteList = await getAllNotesFromDB();
-      const keyListDiv = document.getElementById("keys");
-      keyListDiv.innerHTML = ``;
-      for (let i = noteList.length - 1; i >= 0; i--) {
-        const data = noteList[i];
-        const safeData = JSON.stringify(data).replace(/"/g, '&quot;');
+    // async function showKeyList() {
+    //   const noteList = await getAllNotesFromDB();
+    //   const keyListDiv = document.getElementById("keys");
+    //   keyListDiv.innerHTML = ``;
+    //   for (let i = noteList.length - 1; i >= 0; i--) {
+    //     const data = noteList[i];
+    //     const safeData = JSON.stringify(data).replace(/"/g, '&quot;');
 
-        keyListDiv.innerHTML += `
-          <div class="keyItem" name="${data.id}" title="${data.key}" onclick="loadKey('${safeData}')">
-            <div class="key-title">${data.key}</div>
-            <span class="keylist_delete" onclick="deleteKey(event, '${safeData}')" title="Delete Note">&times;</span>
-          </div>`;
-      }
+    //     keyListDiv.innerHTML += `
+    //       <div class="keyItem" name="${data.id}" title="${data.key}" onclick="loadKey('${safeData}')">
+    //         <div class="key-title">${data.key}</div>
+    //         <span class="keylist_delete" onclick="deleteKey(event, '${safeData}')" title="Delete Note">&times;</span>
+    //       </div>`;
+    //   }
+    // }
+
+    async function showKeyList() {
+    const noteList = await getAllNotesFromDB();
+    const keyListDiv = document.getElementById("keys");
+    
+    keyListDiv.innerHTML = ``; 
+
+    for (let i = noteList.length - 1; i >= 0; i--) {
+        const data = noteList[i];
+
+        const keyItem = document.createElement("div");
+        keyItem.className = "keyItem";
+        keyItem.setAttribute("name", data.id);
+        keyItem.setAttribute("title", data.key);
+        
+        keyItem.addEventListener("click", () => {
+            loadKey(data);
+        });
+
+        keyItem.innerHTML = `<div class="key-title">${data.key}</div>`;
+
+        const deleteSpan = document.createElement("span");
+        deleteSpan.className = "keylist_delete";
+        deleteSpan.title = "Delete Note";
+        deleteSpan.innerHTML = "&times;";
+        
+        deleteSpan.addEventListener("click", (event) => {
+            deleteKey(event, data); 
+        });
+
+        keyItem.appendChild(deleteSpan);
+        keyListDiv.appendChild(keyItem);
     }
+}
+
 
     window.onload = showKeyList;
   </script>
