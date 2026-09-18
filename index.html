@@ -4,14 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="vHOws_vulZIXoXU9vciqxl0woe3DrU3zJ2WrSO6YMII" />
+  <meta name="google-site-verification" content="vHOws_vulZIXoXU9vciqxl0woe3DrU3zJ2WrSO6YMII">
   <title>Just Local Notes</title>
 </head>
 
 <body class="light">
   <div class="header">
     <div class="header-brand">
-      <h3>Just Local Notes</h3>
+      <div class="project-info">
+        <h3>Just Local Notes</h3>
+        <button class="info-button" type="button" aria-label="About Just Local Notes" aria-describedby="project-tooltip">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+            <path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div id="project-tooltip" class="project-tooltip" role="tooltip">
+          <strong>About this project</strong>
+          <p>Just Local Notes is a simple notes app that saves your notes in this browser using IndexedDB.</p>
+          <p>Your notes are not sent to a server or shared with anyone. They are available only in this browser profile on this device.</p>
+          <p>Clearing this browser's site data, using a different browser profile, or switching devices will make these notes unavailable. This is local storage, not a cloud backup.</p>
+        </div>
+      </div>
     </div>
 
     <div class="header-center">
@@ -23,696 +37,281 @@
     </div>
 
     <div class="header-actions">
-      <button id="dark-btn" class="theme-toggle-btn rotate-btn" title="Switch to Dark Theme" onclick="onThemeChange()">
-        <svg class="theme-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-          fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd"
-            d="M13 3a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0V3ZM6.343 4.929A1 1 0 0 0 4.93 6.343l1.414 1.414a1 1 0 0 0 1.414-1.414L6.343 4.929Zm12.728 1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 1.414 1.414l1.414-1.414ZM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-9 4a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2H3Zm16 0a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2h-2ZM7.757 17.657a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414Zm9.9-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM13 19a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Z"
-            clip-rule="evenodd" />
-        </svg>
-      </button>
-      <button id="light-btn" class="theme-toggle-btn rotate-btn" title="Switch to Light Theme"
-        onclick="onThemeChange()">
-        <svg class="theme-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
-          viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 5V3m0 18v-2M7.05 7.05 5.636 5.636m12.728 12.728L16.95 16.95M5 12H3m18 0h-2M7.05 16.95l-1.414 1.414M18.364 5.636 16.95 7.05M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" />
-        </svg>
-      </button>
-      <!-- <button class="btn save-btn" onclick="save()">Save</button> -->
+      <button id="dark-btn" class="theme-toggle-btn" title="Switch to Dark Theme" onclick="onThemeChange()">☾</button>
+      <button id="light-btn" class="theme-toggle-btn" title="Switch to Light Theme" onclick="onThemeChange()">☀</button>
       <button class="btn clear-btn" onclick="clearNote()">Clear</button>
     </div>
+  </div>
+
+  <div id="welcome-modal" class="modal-backdrop" role="presentation" hidden>
+    <section class="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+      <button class="modal-close" type="button" aria-label="Close project information">&times;</button>
+      <div class="modal-icon" aria-hidden="true">i</div>
+      <h2 id="welcome-title">Welcome to Just Local Notes</h2>
+      <div class="project-copy">
+        <p>A lightweight notes app for writing and organizing notes directly in your browser.</p>
+        <h4>How your notes are stored</h4>
+        <p>Your notes are saved locally in this browser using IndexedDB. They are not uploaded to a server, so this app does not sync or provide cloud backup.</p>
+        <h4>What that means for privacy</h4>
+        <p>Your note data stays in this browser profile on this device. Other browser profiles, browsers, devices, or people cannot see it through this app.</p>
+        <p class="notice">If you clear this site's browser data, your notes may be permanently deleted. Export or copy anything important before doing so.</p>
+      </div>
+      <button id="welcome-ok" class="btn primary-btn" type="button">Got it</button>
+    </section>
   </div>
 
   <div class="key_note">
     <div id="keys" class="sideBar-keys"></div>
     <div id="drag-content" class="draggable"></div>
-    <textarea id="note-content" class="note-area" placeholder="Start typing your note here..."
-      oninput="onNoteChange(event)"></textarea>
+    <textarea id="note-content" class="note-area" placeholder="Start typing your note here..." oninput="onNoteChange(event)"></textarea>
   </div>
 
   <script>
-    // window.addEventListener('beforeunload', function (event) {
-    //   event.preventDefault();
-    // });
-
-    window.addEventListener('load', function () {
-      const request = indexedDB.open("YourLocalNoteDB", 1);
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains("notes")) {
-          const objectStore = db.createObjectStore("notes", { keyPath: "id", autoIncrement: true });
-          objectStore.createIndex("id", "id", { unique: true });
-        }
-      }
-    });
-
-    window.addEventListener('load', function () {
-      const current_theme = localStorage.getItem("*theme*");
-      const light_btn = document.getElementById("light-btn");
-      const dark_btn = document.getElementById("dark-btn");
-      const body_element = document.getElementsByTagName("body")[0];
-      if (current_theme === "dark") {
-        dark_btn.style.display = "none";
-        light_btn.style.display = "inline-flex";
-        body_element.classList.add("dark");
-        body_element.classList.remove("light");
-      } else {
-        light_btn.style.display = "none";
-        dark_btn.style.display = "inline-flex";
-        body_element.classList.add("light");
-        body_element.classList.remove("dark");
-      }
-    });
-
+    const DB_NAME = "YourLocalNoteDB";
+    const WELCOME_SEEN_KEY = "*notes-welcome-seen*";
     const dragContent = document.getElementById("drag-content");
     const keysComp = document.getElementById("keys");
     const noteElement = document.getElementById("note-content");
     let startX = 0;
     let startWidth = 0;
-    let noteStartWidth = 0;
 
-    dragContent.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      startX = e.clientX;
-      startWidth = parseInt(document.defaultView.getComputedStyle(keysComp).width, 10);
-      noteStartWidth = parseInt(document.defaultView.getComputedStyle(noteElement).width, 10);
-      window.addEventListener('mousemove', resizeComponent);
-      window.addEventListener('mouseup', stopDrag);
-    });
-
-    function resizeComponent(e) {
-      const currentMoveValue = e.clientX - startX;
-      const newwidth = startWidth + currentMoveValue;
-      if (newwidth > 120) {
-        keysComp.style.width = `${newwidth}px`;
-      }
-    }
-
-    function stopDrag() {
-      window.removeEventListener('mousemove', resizeComponent);
-      window.removeEventListener('mouseup', stopDrag);
-    }
-
-    function onThemeChange() {
-      const current_theme = localStorage.getItem("*theme*");
-      const light_btn = document.getElementById("light-btn");
-      const dark_btn = document.getElementById("dark-btn");
-      const body_element = document.getElementsByTagName("body")[0];
-      if (current_theme === "light" || !current_theme) {
-        localStorage.setItem("*theme*", "dark");
-        dark_btn.style.display = "none";
-        light_btn.style.display = "inline-flex";
-        body_element.classList.add("dark");
-        body_element.classList.remove("light");
-      } else {
-        localStorage.setItem("*theme*", "light");
-        light_btn.style.display = "none";
-        dark_btn.style.display = "inline-flex";
-        body_element.classList.add("light");
-        body_element.classList.remove("dark");
-      }
-    }
-
-    function addNoteToDB(value) {
+    function openDB() {
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open("YourLocalNoteDB", 1);
-        request.onsuccess = (event) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = event => {
           const db = event.target.result;
-          const transaction = db.transaction(["notes"], "readwrite");
-          const store = transaction.objectStore("notes");
-          const addRequest = store.add(value);
-          addRequest.onsuccess = () => resolve(addRequest.result);
-          addRequest.onerror = () => reject("Error on create note");
-        }
-      });
-    }
-
-    function getAllNotesFromDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open("YourLocalNoteDB", 1);
-        request.onsuccess = (event) => {
-          const db = event.target.result;
-          const transaction = db.transaction(["notes"], "readonly");
-          const store = transaction.objectStore("notes");
-          const getRequest = store.getAll();
-          getRequest.onsuccess = () => resolve(getRequest.result);
-          getRequest.onerror = () => reject("Failed to fetch notes.");
-        }
-      });
-    }
-
-    function getNoteById(id) {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open("YourLocalNoteDB", 1);
-        request.onsuccess = (event) => {
-          const db = event.target.result;
-          const transaction = db.transaction(["notes"], "readonly");
-          const store = transaction.objectStore("notes");
-          const getRequest = store.get(id);
-          getRequest.onsuccess = () => resolve(getRequest.result);
-          getRequest.onerror = () => reject("Failed to fetch notes.");
-        }
-      });
-    }
-
-    async function updateNoteById(updatingData) {
-      if (updatingData && updatingData.id) {
-        const getRecord = await getNoteById(updatingData.id);
-        updatingData = { ...getRecord, ...updatingData };
-      }
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open("YourLocalNoteDB", 1);
-        request.onsuccess = (event) => {
-          const db = event.target.result;
-          const transaction = db.transaction(["notes"], "readwrite");
-          const store = transaction.objectStore("notes");
-          const updateRequest = store.put(updatingData);
-          updateRequest.onsuccess = () => resolve("Note updated successfully.");
-          updateRequest.onerror = () => reject("Failed to update the note.");
+          if (!db.objectStoreNames.contains("notes")) db.createObjectStore("notes", { keyPath: "id", autoIncrement: true });
         };
-        request.onerror = () => reject("Failed to open database.");
+        request.onsuccess = event => resolve(event.target.result);
+        request.onerror = () => reject(new Error("Failed to open database."));
       });
     }
 
-    function deleteNoteById(id) {
+    async function addNoteToDB(value) {
+      const db = await openDB();
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open("YourLocalNoteDB", 1);
-        request.onsuccess = (event) => {
-          const db = event.target.result;
-          const transaction = db.transaction(["notes"], "readwrite");
-          const store = transaction.objectStore("notes");
-          const deleteRequest = store.delete(id);
-          deleteRequest.onsuccess = () => resolve("Note deleted successfully.");
-          deleteRequest.onerror = () => reject("Failed to delete the note.");
-        };
-        request.onerror = () => reject("Failed to open database.");
+        const request = db.transaction("notes", "readwrite").objectStore("notes").add(value);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(new Error("Error creating note."));
       });
     }
 
-    // async function save() {
-    //   const key = document.getElementById("key").value;
-    //   const keyId = document.getElementById("key").name;
-    //   const value = document.getElementById("note-content").value;
-    //   let generatedId = undefined;
-    //         console.log(key, keyId, "jkhgfcxzx_____",generatedId)
-
-    //   if (key && !keyId) {
-    //     generatedId = await addNoteToDB({ key: key, value: value });
-    //   } else if (keyId) {
-    //     await updateNoteById({ id: keyId, key: key, value: value });
-    //   }
-    //   if (generatedId) {
-    //     document.getElementById("note-content").name = generatedId;
-    //     document.getElementById("key").name = generatedId;
-    //   }
-    //   await showKeyList();
-    //   setSelectedBackground(keyId || generatedId);
-    // }
-
-    async function onKeyChange(e) {
-      const noteValue = document.getElementById("note-content").value;
-      const keyValue = e.target.value;
-      const keyId = e.target.name;
-      let generatedId = undefined;
-      if (keyValue && keyId) {
-        await updateNoteById({ key: keyValue, id: Number(keyId), value: noteValue });
-      } else {
-        generatedId = await addNoteToDB({ key: keyValue, value: noteValue });
-      }
-      if (generatedId) {
-        document.getElementById("note-content").name = generatedId;
-        document.getElementById("key").name = generatedId;
-      }
-      await showKeyList();
-      setSelectedBackground(keyId || generatedId);
+    async function getAllNotesFromDB() {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const request = db.transaction("notes", "readonly").objectStore("notes").getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(new Error("Failed to fetch notes."));
+      });
     }
 
-    async function onNoteChange(e) {
-      const keyValue = document.getElementById("key").value;
-      const keyId = document.getElementById("key").name;
-      let generatedId = undefined;
-      if (keyValue && keyId) {
-        await updateNoteById({ key: keyValue, id: Number(keyId), value: e.target.value });
-      } else if (keyValue) {
-        generatedId = await addNoteToDB({ key: keyValue, value: e.target.value });
-      } else {
-        generatedId = await addNoteToDB({ key: "(Unknown)", value: e.target.value });
-        document.getElementById("key").value = `(Unknown_${generatedId})`;
-        await updateNoteById({ key: `(Unknown_${generatedId})`, id: generatedId, value: e.target.value });
-      }
-      if (generatedId) {
-        document.getElementById("note-content").name = generatedId;
-        document.getElementById("key").name = generatedId;
-      }
+    async function getNoteById(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const request = db.transaction("notes", "readonly").objectStore("notes").get(id);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(new Error("Failed to fetch note."));
+      });
+    }
+
+    async function updateNoteById(data) {
+      if (data && data.id) data = { ...(await getNoteById(data.id)), ...data };
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const request = db.transaction("notes", "readwrite").objectStore("notes").put(data);
+        request.onsuccess = resolve;
+        request.onerror = () => reject(new Error("Failed to update note."));
+      });
+    }
+
+    async function deleteNoteById(id) {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const request = db.transaction("notes", "readwrite").objectStore("notes").delete(id);
+        request.onsuccess = resolve;
+        request.onerror = () => reject(new Error("Failed to delete note."));
+      });
+    }
+
+    async function onKeyChange(event) {
+      const key = event.target.value;
+      const value = noteElement.value;
+      const id = event.target.name;
+      const generatedId = id ? null : await addNoteToDB({ key, value });
+      if (id) await updateNoteById({ id: Number(id), key, value });
+      if (generatedId) setNoteId(generatedId);
       await showKeyList();
-      setSelectedBackground(keyId || generatedId);
+      setSelectedBackground(id || generatedId);
+    }
+
+    async function onNoteChange(event) {
+      const keyInput = document.getElementById("key");
+      const key = keyInput.value;
+      const id = keyInput.name;
+      let generatedId;
+      if (id) await updateNoteById({ id: Number(id), key, value: event.target.value });
+      else {
+        generatedId = await addNoteToDB({ key: key || "(Unknown)", value: event.target.value });
+        if (!key) keyInput.value = `(Unknown_${generatedId})`;
+      }
+      if (generatedId) setNoteId(generatedId);
+      await showKeyList();
+      setSelectedBackground(id || generatedId);
+    }
+
+    function setNoteId(id) {
+      document.getElementById("key").name = id;
+      noteElement.name = id;
     }
 
     function newNote() {
-      const noteValue = document.getElementById("note-content").value;
-      const noteKey = document.getElementById("key").value;
-      if (noteValue && !noteKey) {
-        const confirmNew = confirm("Do you want to clear the existing value in notes?");
-        if (!confirmNew) return;
-      }
-
-      document.getElementById("key").value = "";
-      document.getElementById("note-content").value = "";
-      document.getElementById("key").name = "";
-      document.getElementById("note-content").name = "";
-
-      const elements = Array.from(document.getElementsByClassName("keyItem"));
-      for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.remove("active");
-      }
+      const keyInput = document.getElementById("key");
+      if (noteElement.value && !keyInput.value && !confirm("Do you want to clear the existing value in notes?")) return;
+      keyInput.value = "";
+      noteElement.value = "";
+      keyInput.name = "";
+      noteElement.name = "";
+      document.querySelectorAll(".keyItem.active").forEach(item => item.classList.remove("active"));
     }
 
     function loadKey(data) {
-      document.getElementById("key").value = data.key; 
-      document.getElementById("note-content").value = data?.value ? data?.value : ""; 
-      document.getElementById("key").name = data.id; 
-      document.getElementById("note-content").name = data.id; 
-      setSelectedBackground(data.id); 
+      const keyInput = document.getElementById("key");
+      keyInput.value = data.key;
+      noteElement.value = data.value || "";
+      setNoteId(data.id);
+      setSelectedBackground(data.id);
     }
 
     function setSelectedBackground(id) {
-      const elements = Array.from(document.getElementsByClassName("keyItem"));
-      elements.forEach(el => {
-        const nameAttr = el.getAttribute('name');
-        if (nameAttr && nameAttr.includes(String(id))) {
-          el.classList.add("active");
-        } else {
-          el.classList.remove("active");
-        }
+      document.querySelectorAll(".keyItem").forEach(item => item.classList.toggle("active", item.getAttribute("name") === String(id)));
+    }
+
+    function clearNote() { noteElement.value = ""; }
+
+    async function deleteKey(event, data) {
+      event.stopPropagation();
+      if (!confirm(`Do you want to delete this "${data.key}"?`)) return;
+      await deleteNoteById(data.id);
+      if (Number(document.getElementById("key").name) === data.id) newNote();
+      await showKeyList();
+    }
+
+    async function showKeyList() {
+      const keyListDiv = document.getElementById("keys");
+      keyListDiv.replaceChildren();
+      const notes = await getAllNotesFromDB();
+      notes.reverse().forEach(data => {
+        const item = document.createElement("div");
+        item.className = "keyItem";
+        item.setAttribute("name", data.id);
+        item.title = data.key;
+        item.addEventListener("click", () => loadKey(data));
+        const title = document.createElement("div");
+        title.className = "key-title";
+        title.textContent = data.key;
+        const remove = document.createElement("button");
+        remove.className = "keylist_delete";
+        remove.type = "button";
+        remove.title = "Delete Note";
+        remove.setAttribute("aria-label", `Delete ${data.key}`);
+        remove.innerHTML = "&times;";
+        remove.addEventListener("click", event => deleteKey(event, data));
+        item.append(title, remove);
+        keyListDiv.appendChild(item);
       });
     }
 
-    function clearNote() {
-      document.getElementById("note-content").value = "";
+    function onThemeChange() {
+      const dark = document.body.classList.contains("dark");
+      localStorage.setItem("*theme*", dark ? "light" : "dark");
+      document.body.classList.toggle("dark", !dark);
+      document.body.classList.toggle("light", dark);
+      document.getElementById("dark-btn").style.display = dark ? "inline-flex" : "none";
+      document.getElementById("light-btn").style.display = dark ? "none" : "inline-flex";
     }
 
-    function clearKey() {
-      const keyInput = document.getElementById("key");
-      keyInput.value = "";
-      keyInput.name = "";
-      keyInput.dispatchEvent(new Event("input"));
+    function closeWelcome() {
+      localStorage.setItem(WELCOME_SEEN_KEY, "true");
+      document.getElementById("welcome-modal").hidden = true;
     }
 
-    async function deleteKey(event, datastring) {
-      event.stopPropagation();
-      const parsedData = datastring;
-      const confirmDelete = confirm(`Do you want to delete this "${parsedData.key}"?`);
-      const selectedKeyId = document.getElementById("key").name;
-      if (confirmDelete) {
-        await deleteNoteById(parsedData.id);
-        showKeyList();
-        if (parsedData.id === Number(selectedKeyId)) {
-          clearKey();
-          clearNote();
-        }
-      }
+    dragContent.addEventListener("mousedown", event => {
+      event.preventDefault();
+      startX = event.clientX;
+      startWidth = parseInt(getComputedStyle(keysComp).width, 10);
+      window.addEventListener("mousemove", resizeComponent);
+      window.addEventListener("mouseup", stopDrag, { once: true });
+    });
+    function resizeComponent(event) {
+      const width = startWidth + event.clientX - startX;
+      if (width > 120) keysComp.style.width = `${width}px`;
     }
+    function stopDrag() { window.removeEventListener("mousemove", resizeComponent); }
 
-    // async function showKeyList() {
-    //   const noteList = await getAllNotesFromDB();
-    //   const keyListDiv = document.getElementById("keys");
-    //   keyListDiv.innerHTML = ``;
-    //   for (let i = noteList.length - 1; i >= 0; i--) {
-    //     const data = noteList[i];
-    //     const safeData = JSON.stringify(data).replace(/"/g, '&quot;');
+    window.addEventListener("load", async () => {
+      const theme = localStorage.getItem("*theme*") === "dark";
+      document.body.classList.toggle("dark", theme);
+      document.body.classList.toggle("light", !theme);
+      document.getElementById("dark-btn").style.display = theme ? "none" : "inline-flex";
+      document.getElementById("light-btn").style.display = theme ? "inline-flex" : "none";
+      await showKeyList();
+      const modal = document.getElementById("welcome-modal");
+      if (!localStorage.getItem(WELCOME_SEEN_KEY)) modal.hidden = false;
+    });
 
-    //     keyListDiv.innerHTML += `
-    //       <div class="keyItem" name="${data.id}" title="${data.key}" onclick="loadKey('${safeData}')">
-    //         <div class="key-title">${data.key}</div>
-    //         <span class="keylist_delete" onclick="deleteKey(event, '${safeData}')" title="Delete Note">&times;</span>
-    //       </div>`;
-    //   }
-    // }
-
-    async function showKeyList() {
-    const noteList = await getAllNotesFromDB();
-    const keyListDiv = document.getElementById("keys");
-    
-    keyListDiv.innerHTML = ``; 
-
-    for (let i = noteList.length - 1; i >= 0; i--) {
-        const data = noteList[i];
-
-        const keyItem = document.createElement("div");
-        keyItem.className = "keyItem";
-        keyItem.setAttribute("name", data.id);
-        keyItem.setAttribute("title", data.key);
-        
-        keyItem.addEventListener("click", () => {
-            loadKey(data);
-        });
-
-        keyItem.innerHTML = `<div class="key-title">${data.key}</div>`;
-
-        const deleteSpan = document.createElement("span");
-        deleteSpan.className = "keylist_delete";
-        deleteSpan.title = "Delete Note";
-        deleteSpan.innerHTML = "&times;";
-        
-        deleteSpan.addEventListener("click", (event) => {
-            deleteKey(event, data); 
-        });
-
-        keyItem.appendChild(deleteSpan);
-        keyListDiv.appendChild(keyItem);
-    }
-}
-
-
-    window.onload = showKeyList;
+    document.getElementById("welcome-ok").addEventListener("click", closeWelcome);
+    document.querySelector(".modal-close").addEventListener("click", closeWelcome);
+    document.getElementById("welcome-modal").addEventListener("click", event => {
+      if (event.target.id === "welcome-modal") closeWelcome();
+    });
   </script>
 
   <style>
-    :root {
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --transition-speed: 0.2s;
-      --border-radius: 8px;
-    }
-
-    body.light {
-      --bg-main: #f8fafc;
-      --bg-header: #ffffff;
-      --bg-sidebar: #f1f5f9;
-      --bg-editor: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --item-hover: #e2e8f0;
-      --item-active: #e0e7ff;
-      --accent-color: #3b82f6;
-      --accent-hover: #2563eb;
-      --save-btn-bg: #22c55e;
-      --save-btn-hover: #16a34a;
-      --clear-btn-bg: #ef4444;
-      --clear-btn-hover: #dc2626;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    }
-
-    body.dark {
-      --bg-main: #0f172a;
-      --bg-header: #1e293b;
-      --bg-sidebar: #1e293b;
-      --bg-editor: #0f172a;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border-color: #334155;
-      --item-hover: #334155;
-      --item-active: #312e81;
-      --accent-color: #60a5fa;
-      --accent-hover: #3b82f6;
-      --save-btn-bg: #15803d;
-      --save-btn-hover: #166534;
-      --clear-btn-bg: #b91c1c;
-      --clear-btn-hover: #991b1b;
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    }
-
-    body.light #light-btn {
-      display: none !important;
-    }
-
-    body.dark #dark-btn {
-      display: none !important;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: var(--font-family);
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-    }
-
-    /* Header */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 60px;
-      padding: 0 20px;
-      background-color: var(--bg-header);
-      border-bottom: 1px solid var(--border-color);
-      box-shadow: var(--shadow-sm);
-      z-index: 10;
-    }
-
-    .header-brand h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .header-center {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      max-width: 600px;
-      margin: 0 20px;
-    }
-
-    .input-wrapper {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      gap: 10px;
-    }
-
-    .input-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .key-input {
-      flex: 1;
-      padding: 8px 12px;
-      font-size: 0.875rem;
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      outline: none;
-      transition: border-color var(--transition-speed) ease;
-    }
-
-    .key-input:focus {
-      border-color: var(--accent-color);
-    }
-
-    .new-btn {
-      background: none;
-      border: none;
-      color: var(--accent-color);
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      padding: 6px 10px;
-      border-radius: var(--border-radius);
-      transition: background-color var(--transition-speed) ease;
-    }
-
-    .new-btn:hover {
-      background-color: var(--item-hover);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Buttons */
-    .btn {
-      padding: 8px 16px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      border: none;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      transition: background-color var(--transition-speed) ease, transform 0.1s ease;
-      color: #ffffff;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .save-btn {
-      background-color: var(--save-btn-bg);
-    }
-
-    .save-btn:hover {
-      background-color: var(--save-btn-hover);
-    }
-
-    .clear-btn {
-      background-color: var(--clear-btn-bg);
-    }
-
-    .clear-btn:hover {
-      background-color: var(--clear-btn-hover);
-    }
-
-    .theme-toggle-btn {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      padding: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-main);
-      transition: background-color var(--transition-speed) ease;
-    }
-
-    .theme-toggle-btn:hover {
-      background-color: var(--item-hover);
-    }
-
-    .theme-svg {
-      color: var(--text-main);
-      transition: transform 0.4s ease;
-    }
-
-    .rotate-btn:hover .theme-svg {
-      transform: rotate(30deg);
-    }
-
-    /* Workspace */
-    .key_note {
-      display: flex;
-      flex: 1;
-      height: calc(100vh - 60px);
-      overflow: hidden;
-    }
-
-    /* Sidebar */
-    .sideBar-keys {
-      width: 260px;
-      min-width: 150px;
-      background-color: var(--bg-sidebar);
-      border-right: 1px solid var(--border-color);
-      overflow-y: auto;
-      padding: 5px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .sideBar-keys::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    .sideBar-keys::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .sideBar-keys::-webkit-scrollbar-thumb {
-      background-color: var(--border-color);
-      border-radius: 10px;
-    }
-
-    .sideBar-keys::-webkit-scrollbar-thumb:hover {
-      background-color: var(--text-muted);
-    }
-
-    .keyItem {
-      padding: 6px 8px;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.875rem;
-      color: var(--text-main);
-      transition: background-color var(--transition-speed) ease;
-    }
-
-    .keyItem:hover {
-      background-color: var(--item-hover);
-    }
-
-    .keyItem.active {
-      background-color: var(--item-active);
-      font-weight: 500;
-    }
-
-    .key-title {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      flex: 1;
-    }
-
-    .keylist_delete {
-      visibility: hidden;
-      opacity: 0;
-      font-size: 1.1rem;
-      line-height: 1;
-      color: var(--text-muted);
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 8px;
-      transition: opacity 0.2s ease, background-color 0.2s ease;
-    }
-
-    .keylist_delete:hover {
-      color: #ef4444;
-      background-color: rgba(239, 68, 68, 0.1);
-    }
-
-    .keyItem:hover .keylist_delete {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    /* Draggable Divider */
-    .draggable {
-      width: 4px;
-      background-color: transparent;
-      cursor: ew-resize;
-      transition: background-color var(--transition-speed) ease;
-      z-index: 5;
-    }
-
-    .draggable:hover,
-    .draggable:active {
-      background-color: var(--accent-color);
-    }
-
-    /* Editor */
-    .note-area {
-      flex: 1;
-      height: 100%;
-      border: none;
-      outline: none;
-      padding: 24px;
-      font-family: var(--font-family);
-      font-size: 1rem;
-      line-height: 1.6;
-      background-color: var(--bg-editor);
-      color: var(--text-main);
-      resize: none;
-    }
+    :root { --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; --transition-speed: .2s; --border-radius: 8px; }
+    body.light { --bg-main:#f8fafc; --bg-header:#fff; --bg-sidebar:#f1f5f9; --bg-editor:#fff; --text-main:#0f172a; --text-muted:#64748b; --border-color:#e2e8f0; --item-hover:#e2e8f0; --item-active:#e0e7ff; --accent-color:#3b82f6; --accent-hover:#2563eb; --clear-btn-bg:#ef4444; --clear-btn-hover:#dc2626; --shadow-sm:0 1px 2px rgb(0 0 0 / 5%); }
+    body.dark { --bg-main:#0f172a; --bg-header:#1e293b; --bg-sidebar:#1e293b; --bg-editor:#0f172a; --text-main:#f8fafc; --text-muted:#94a3b8; --border-color:#334155; --item-hover:#334155; --item-active:#312e81; --accent-color:#60a5fa; --accent-hover:#3b82f6; --clear-btn-bg:#b91c1c; --clear-btn-hover:#991b1b; --shadow-sm:0 1px 2px rgb(0 0 0 / 30%); }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--font-family); background:var(--bg-main); color:var(--text-main); height:100vh; display:flex; flex-direction:column; overflow:hidden; transition:background-color var(--transition-speed), color var(--transition-speed); }
+    .header { display:flex; align-items:center; justify-content:space-between; min-height:60px; padding:0 20px; background:var(--bg-header); border-bottom:1px solid var(--border-color); box-shadow:var(--shadow-sm); z-index:10; }
+    .header-brand h3 { font-size:1.1rem; font-weight:600; letter-spacing:-.02em; }
+    .project-info { position:relative; display:flex; align-items:center; gap:5px; }
+    .info-button { color:var(--text-muted); background:none; border:0; cursor:pointer; display:flex; padding:2px; }
+    .info-button:hover, .info-button:focus { color:var(--accent-color); }
+    .project-tooltip { position:absolute; left:0; top:calc(100% + 12px); width:310px; padding:14px; background:var(--bg-header); border:1px solid var(--border-color); border-radius:var(--border-radius); box-shadow:0 8px 24px rgb(0 0 0 / 18%); color:var(--text-main); font-size:.8rem; line-height:1.45; visibility:hidden; opacity:0; transform:translateY(-4px); transition:opacity var(--transition-speed), transform var(--transition-speed); z-index:30; pointer-events:none; }
+    .project-tooltip strong { display:block; margin-bottom:6px; font-size:.9rem; }
+    .project-tooltip p + p { margin-top:8px; }
+    .info-button:hover + .project-tooltip, .info-button:focus + .project-tooltip { visibility:visible; opacity:1; transform:translateY(0); }
+    .header-center { flex:1; display:flex; justify-content:center; max-width:600px; margin:0 20px; }
+    .input-wrapper { display:flex; align-items:center; width:100%; gap:10px; }
+    .input-label { font-size:.875rem; font-weight:500; color:var(--text-muted); white-space:nowrap; }
+    .key-input { flex:1; padding:8px 12px; font-size:.875rem; background:var(--bg-main); color:var(--text-main); border:1px solid var(--border-color); border-radius:var(--border-radius); outline:none; }
+    .key-input:focus { border-color:var(--accent-color); }
+    button { font:inherit; }
+    .new-btn { background:none; border:0; color:var(--accent-color); font-size:.875rem; font-weight:600; cursor:pointer; white-space:nowrap; padding:6px 10px; border-radius:var(--border-radius); }
+    .new-btn:hover { background:var(--item-hover); }
+    .header-actions { display:flex; align-items:center; gap:10px; }
+    .btn { padding:8px 16px; font-size:.875rem; font-weight:500; border:0; border-radius:var(--border-radius); cursor:pointer; color:#fff; }
+    .clear-btn { background:var(--clear-btn-bg); } .clear-btn:hover { background:var(--clear-btn-hover); }
+    .primary-btn { background:var(--accent-color); } .primary-btn:hover { background:var(--accent-hover); }
+    .theme-toggle-btn { background:transparent; border:1px solid var(--border-color); border-radius:var(--border-radius); padding:6px 10px; cursor:pointer; color:var(--text-main); }
+    .theme-toggle-btn:hover { background:var(--item-hover); }
+    .key_note { display:flex; flex:1; height:calc(100vh - 60px); overflow:hidden; }
+    .sideBar-keys { width:260px; min-width:150px; background:var(--bg-sidebar); border-right:1px solid var(--border-color); overflow-y:auto; padding:5px; display:flex; flex-direction:column; gap:2px; }
+    .keyItem { padding:6px 8px; border-radius:var(--border-radius); cursor:pointer; display:flex; align-items:center; justify-content:space-between; font-size:.875rem; color:var(--text-main); }
+    .keyItem:hover { background:var(--item-hover); } .keyItem.active { background:var(--item-active); font-weight:500; }
+    .key-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+    .keylist_delete { visibility:hidden; opacity:0; background:none; border:0; font-size:1.1rem; line-height:1; color:var(--text-muted); padding:2px 6px; cursor:pointer; }
+    .keylist_delete:hover { color:#ef4444; } .keyItem:hover .keylist_delete { visibility:visible; opacity:1; }
+    .draggable { width:4px; background:transparent; cursor:ew-resize; z-index:5; } .draggable:hover { background:var(--accent-color); }
+    .note-area { flex:1; height:100%; border:0; outline:0; padding:24px; font-family:var(--font-family); font-size:1rem; line-height:1.6; background:var(--bg-editor); color:var(--text-main); resize:none; }
+    .modal-backdrop { position:fixed; inset:0; display:grid; place-items:center; padding:20px; background:rgb(15 23 42 / 65%); z-index:100; }
+    .modal-backdrop[hidden] { display:none; }
+    .welcome-modal { position:relative; width:min(100%, 500px); max-height:90vh; overflow:auto; padding:30px; background:var(--bg-header); color:var(--text-main); border:1px solid var(--border-color); border-radius:12px; box-shadow:0 20px 50px rgb(0 0 0 / 25%); }
+    .modal-close { position:absolute; top:12px; right:14px; border:0; background:none; color:var(--text-muted); font-size:1.7rem; line-height:1; cursor:pointer; }
+    .modal-icon { width:38px; height:38px; display:grid; place-items:center; margin-bottom:14px; border-radius:50%; background:var(--item-active); color:var(--accent-color); font-size:1.4rem; font-weight:700; }
+    .welcome-modal h2 { margin-bottom:16px; font-size:1.35rem; } .project-copy { color:var(--text-muted); font-size:.92rem; line-height:1.55; } .project-copy h4 { margin:16px 0 5px; color:var(--text-main); } .project-copy .notice { margin-top:14px; padding:10px; border-left:3px solid var(--accent-color); background:var(--item-hover); }
+    .welcome-modal .primary-btn { margin-top:22px; width:100%; }
+    @media (max-width:700px) { .header { padding:10px; flex-wrap:wrap; gap:8px; } .header-brand { order:1; } .header-actions { order:2; margin-left:auto; } .header-center { order:3; flex-basis:100%; margin:0; max-width:none; } .key_note { height:calc(100vh - 110px); } .project-tooltip { width:260px; } }
   </style>
 </body>
 
